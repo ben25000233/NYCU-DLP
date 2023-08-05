@@ -19,8 +19,16 @@ def getData(mode):
         label = df['label'].tolist()
         return path, label
     
-    else:
-        df = pd.read_csv('test.csv')
+    elif mode == "test18":
+        df = pd.read_csv('test18.csv')
+        path = df['Path'].tolist()
+        return path
+    elif mode == "test50":
+        df = pd.read_csv('test50.csv')
+        path = df['Path'].tolist()
+        return path
+    elif mode == "test152":
+        df = pd.read_csv('test152.csv')
         path = df['Path'].tolist()
         return path
 
@@ -43,6 +51,15 @@ class LeukemiaLoader(data.Dataset):
         self.img_name = [name[1:] for name in self.img_name]
         
         print("> Found %d images..." % (len(self.img_name)))  
+        transform_list = []
+        transform_list.append(transforms.RandomRotation(degrees=30))
+        transform_list.append(transforms.RandomHorizontalFlip(p=0.5))
+        transform_list.append(transforms.CenterCrop(300))
+        transform_list.append(transforms.ToTensor())
+        transform_list.append(transforms.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0]))
+        self.transform = transforms.Compose(transform_list)
+
+        self.current_path = os.path.abspath(os.getcwd())
 
     def __len__(self):
         """'return the size of dataset"""
@@ -67,9 +84,8 @@ class LeukemiaLoader(data.Dataset):
                          
             step4. Return processed image and label
         """
-        current_path = os.path.abspath(os.getcwd())
-        path = self.img_name[index]
-        path = current_path + path
+        
+        path = self.current_path + self.img_name[index]
         img = Image.open(path).convert('RGB')
         '''
         plt.imshow(img)
@@ -78,18 +94,13 @@ class LeukemiaLoader(data.Dataset):
         '''
        #transform image
         
-        transform_list = []
-        transform_list.append(transforms.ToTensor())
-        transform_list.append(transforms.Normalize(mean=[0.0, 0.0, 0.0], std=[1.0, 1.0, 1.0]))
-        transform = transforms.Compose(transform_list)
-        img = transform(img)
         
-
+        img = self.transform(img)
 
         if (self.mode == "train") or (self.mode == "valid"):
             label = self.label[index]
             return img, label, path
         else:
-            return img, path
+            return img, self.img_name[index]
         
         
