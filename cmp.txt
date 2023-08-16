@@ -1,0 +1,9 @@
+python Trainer.py --DR C:\Users\ben\Desktop\NYCU_DLP_LAB\Lab4\LAB4_Dataset --save_root C:\Users\ben\Desktop\NYCU_DLP_LAB\Lab4\ckpt
+
+
+python Tester.py --DR C:\Users\ben\Desktop\NYCU_DLP_LAB\Lab4\LAB4_Dataset --save_root C:\Users\ben\Desktop\NYCU_DLP_LAB\Lab4\test_ckpt --ckpt_path C:\Users\ben\Desktop\NYCU_DLP_LAB\Lab4\ckpt\epoch=27.ckpt
+
+
+
+
+
